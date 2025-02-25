@@ -16,3 +16,9 @@ Tugas ini bertujuan untuk membuat **dashboard IoT** menggunakan **Ubidots**, di 
 - **MongoDB** – untuk menyimpan data sensor.
 - **Flask/FastAPI (opsional)** – untuk API Services sebagai perantara MongoDB.
 - **Python** – untuk mengelola data dan API Services.
+
+✍️ **By Tim Buildless**
+- Lukas Austin  
+- Muhammad Raihan Rizky Zain  
+- Muhammad Ainur Rafiq Noantaria  
+- Muhammad Hafizh Fenaldi
