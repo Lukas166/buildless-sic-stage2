@@ -6,6 +6,7 @@ import json
 import dht
 import ssd1306
 from umqtt.simple import MQTTClient
+import urequests
 
 WIFI_SSID = "chalkid"
 WIFI_PASS = "1483369waddupbiatch"
@@ -82,6 +83,18 @@ def publish_data(client, variable, value):
     except Exception as e:
         print(f"❌ Failed to Publish: {e}")
 
+# Kirim Data ke Flask Server
+def send_to_flask(data):
+    url = "http://192.168.81.110:5000/data"  # Ganti dengan IP server Flask Anda
+    headers = {"Content-Type": "application/json"}
+
+    try:
+        response = urequests.post(url, json=data, headers=headers)
+        print("✅ Data sent to Flask:", response.text)
+        response.close()
+    except Exception as e:
+        print("❌ Failed to send data to Flask:", str(e))
+
 # Update OLED Display
 def update_oled(ldr_value, temperature, humidity, led_status, motion_detected, screen_index):
     oled.fill(0)
@@ -146,12 +159,22 @@ def main():
                 screen_index = (screen_index + 1) % 5
 
             # Kirim data ke MQTT setiap 5 detik
-            if counter % 2 == 0:
+            if counter % 5 == 0:
                 publish_data(client, "light", ldr_value)
                 publish_data(client, "temperature", temperature)
                 publish_data(client, "humidity", humidity)
                 publish_data(client, "led_status", led_status)
                 publish_data(client, "motion", motion_detected)
+
+                # Kirim data ke Flask Server
+                sensor_data = {
+                    "light": ldr_value,
+                    "temperature": temperature,
+                    "humidity": humidity,
+                    "led_status": led_status,
+                    "motion": motion_detected
+                }
+                send_to_flask(sensor_data)
 
             counter += 1
             time.sleep(1)
